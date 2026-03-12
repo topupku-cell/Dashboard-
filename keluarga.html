@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My AI Dashboard - Master</title>
+    <style>
+        :root {
+            --main-border-color: #58a6ff;
+            --game-border-color: #ff7b72;
+            --text-color: #c9d1d9;
+            --bg-color-body: #0d1117;
+            --bg-color-container: #161b22;
+            --bg-color-item: #21262d;
+        }
+
+        body {
+            background-color: var(--bg-color-body);
+            color: var(--text-color);
+            font-family: sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px 0;
+            overflow-y: auto;
+        }
+
+        .container {
+            background: var(--bg-color-container);
+            padding: 25px;
+            border-radius: 20px;
+            border: 1px solid var(--main-border-color);
+            text-align: center;
+            width: 85%;
+            max-width: 400px;
+            transition: 0.3s;
+        }
+
+        @media (orientation: landscape) {
+            .container { max-width: 800px; }
+            .main-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; text-align: left; }
+        }
+
+        /* --- BOLA CS --- */
+        .floating-cs {
+            position: fixed; bottom: 20px; right: 20px;
+            width: 60px; height: 60px;
+            background: var(--main-border-color);
+            border-radius: 50%;
+            display: flex; justify-content: center; align-items: center;
+            font-size: 24px; cursor: pointer; z-index: 1000;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse { 0% {transform: scale(1);} 50% {transform: scale(1.1);} 100% {transform: scale(1);} }
+
+        .cs-popup {
+            display: none; position: fixed; top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--bg-color-item);
+            border: 2px solid var(--main-border-color);
+            border-radius: 20px; padding: 20px; width: 280px; z-index: 1001; text-align: center;
+        }
+
+        h1 { color: var(--main-border-color); font-size: 26px; margin-bottom: 5px; }
+        #hacker-text { font-family: 'Courier New', monospace; font-size: 13px; color: #238636; min-height: 20px; margin-bottom: 10px; }
+        #digital-clock { font-size: 2.5em; font-weight: bold; color: var(--main-border-color); margin: 10px 0; }
+        #clock-date { font-size: 0.8em; color: #8b949e; margin-top: -10px; margin-bottom: 20px; }
+
+        .section-title { font-size: 11px; color: var(--main-border-color); text-transform: uppercase; margin: 15px 0 5px 5px; border-bottom: 1px solid #30363d; }
+
+        .ai-item {
+            background: var(--bg-color-item);
+            padding: 15px; margin: 8px 0;
+            border-radius: 12px;
+            border-left: 5px solid var(--main-border-color);
+            cursor: pointer; font-weight: bold;
+        }
+
+        .grid-tools { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+        .tool-item {
+            background: var(--bg-color-item); padding: 12px; border-radius: 10px;
+            border-bottom: 3px solid var(--main-border-color);
+            font-size: 11px; font-weight: bold; cursor: pointer; text-align: center;
+        }
+
+        #news-container { background: #0d1117; border-radius: 12px; padding: 12px; border: 1px dashed var(--main-border-color); max-height: 150px; overflow-y: auto; }
+        .news-link { color: var(--main-border-color); text-decoration: none; font-size: 13px; display: block; margin-bottom: 8px; }
+
+        #note-input { width: 100%; height: 80px; background: var(--bg-color-item); border: 1px solid var(--main-border-color); border-radius: 8px; color: white; padding: 10px; box-sizing: border-box; }
+        .btn-color { padding: 8px; background: #21262d; color: white; border: 1px solid var(--main-border-color); border-radius: 8px; cursor: pointer; margin: 3px; font-size: 10px; }
+
+        .footer { margin-top: 30px; padding-top: 15px; border-top: 1px solid #30363d; font-size: 16px; color: #8b949e; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div class="cs-popup" id="csBox">
+    <h3 style="color:var(--main-border-color)">AI CS</h3>
+    <p style="font-size:12px">Bingung? Tanya AI asisten di bawah ya!</p>
+    <button class="ai-item" style="width:100%" onclick="window.open('https://gemini.google.com')">🤖 TANYA AI</button>
+    <button onclick="toggleCS()" style="background:none; border:none; color:#ff7b72; cursor:pointer; margin-top:10px">Tutup</button>
+</div>
+
+<div class="floating-cs" onclick="toggleCS()">🎧</div>
+
+<div class="container">
+    <div id="hacker-text"></div>
+    <h1>My AI Station</h1>
+    <div id="digital-clock">00:00:00</div>
+    <div id="clock-date">Syncing...</div>
+
+    <div class="main-grid">
+        <div class="col-left">
+            <div class="section-title">Network & AI</div>
+            <div class="grid-tools">
+                <div class="tool-item" onclick="window.open('https://www.speedtest.net', '_blank')">🚀 Speedtest</div>
+                <div class="tool-item" onclick="window.open('https://downdetector.id', '_blank')">🔍 Status</div>
+            </div>
+            <div class="ai-item" onclick="window.open('https://gemini.google.com', '_blank')">🤖 Gemini AI</div>
+            <div class="ai-item" onclick="window.open('https://www.meta.ai', '_blank')">🔗 Meta AI</div>
+            <div class="ai-item" onclick="window.open('https://www.dola.com/chat/', '_blank')">💬 Dola AI</div>
+        </div>
+
+        <div class="col-right">
+            <div class="section-title">Entertainment & Anime</div>
+            <div class="ai-item" onclick="window.open('https://otakudesu.blog/', '_blank')" style="border-left-color: #ffdd00;">🏯 Otakudesu</div>
+            <div class="ai-item" onclick="window.open('https://m.youtube.com/', '_blank')">▶️ YouTube</div>
+            <div class="ai-item" onclick="window.open('https://open.spotify.com/browse', '_blank')">🎵 Spotify</div>
+
+            <div class="section-title">Today's News</div>
+            <div id="news-container"><div id="news-content">📡 Memuat...</div></div>
+
+            <div class="section-title">Quick Notes</div>
+            <textarea id="note-input" placeholder="Tulis rahasia..."></textarea>
+            
+            <div style="margin-top: 10px;">
+                <button class="btn-color" onclick="setMode('random')">🎨 Random</button>
+                <button class="btn-color" onclick="setMode('rgb')">🌈 RGB</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        Created by Gemini | <span style="color: var(--main-border-color);">hengkel</span> | 2026
+    </div>
+</div>
+
+<script>
+    function toggleCS() {
+        const box = document.getElementById('csBox');
+        box.style.display = (box.style.display === 'block') ? 'none' : 'block';
+    }
+
+    function updateClock() {
+        const now = new Date();
+        document.getElementById('digital-clock').innerText = now.toLocaleTimeString('id-ID');
+        document.getElementById('clock-date').innerText = now.toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+    }
+    setInterval(updateClock, 1000); updateClock();
+
+    let i = 0; const txt = "Sistem Aktif. Selamat datang, Kapten.";
+    function typeWriter() { if (i < txt.length) { document.getElementById('hacker-text').innerHTML += txt.charAt(i); i++; setTimeout(typeWriter, 50); } }
+    window.onload = typeWriter;
+
+    function getNews() {
+        const url = "https://api.rss2json.com/v1/api.json?rss_url=https://news.google.com/rss?hl=id&gl=ID&ceid=ID:id";
+        fetch(url).then(res => res.json()).then(data => {
+            let html = "";
+            data.items.slice(0, 5).forEach(item => { html += `<a class="news-link" href="${item.link}" target="_blank">● ${item.title}</a>`; });
+            document.getElementById('news-content').innerHTML = html;
+        });
+    }
+    getNews();
+
+    const box = document.getElementById('note-input');
+    box.value = localStorage.getItem('dash_note') || "";
+    box.oninput = () => localStorage.setItem('dash_note', box.value);
+
+    let rgbInterval;
+    function setMode(type) {
+        clearInterval(rgbInterval);
+        if(type === 'random') {
+            const c = '#' + Math.floor(Math.random()*16777215).toString(16);
+            document.documentElement.style.setProperty('--main-border-color', c);
+        } else {
+            let h = 0;
+            rgbInterval = setInterval(() => { h = (h + 2) % 360; document.documentElement.style.setProperty('--main-border-color', `hsl(${h}, 70%, 60%)`); }, 50);
+        }
+    }
+</script>
+</body>
+</html>
